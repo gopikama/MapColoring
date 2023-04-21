@@ -1,6 +1,9 @@
 import java.sql.Array;
 import java.util.*;
 
+
+
+
 public class Mapcolour {
     public static final int VERTICES = 13;
     ArrayList<LinkedList<Integer>> adjacencyList;
@@ -8,6 +11,7 @@ public class Mapcolour {
 
     HashMap<Integer,String> colorMap;
     HashMap<Integer,Integer> distanceMap;
+    HashMap<Integer,List<Integer>> treeLevelsMap;
 
     int[] state;
     int[] predecessor;
@@ -20,6 +24,7 @@ public class Mapcolour {
         distanceMap=new HashMap<>(VERTICES+1);
         state=new int[VERTICES+1];
         predecessor=new int[VERTICES+1];
+        treeLevelsMap=new HashMap<>();
 
 
     }
@@ -92,20 +97,20 @@ public class Mapcolour {
 
     }
     public void displayAdjacencyList(){
-        System.out.println("The adjacency list for South America graph is:");
+        System.out.println("\nThe adjacency list for South America graph is:");
         for(int i=1;i<=VERTICES;i++){
         System.out.println("Vertex "+i+" is adjacent to->"+adjacencyList.get(i));
         }
     }
     public void printColors(){
-        System.out.println("Colors used for each country:");
+        System.out.println("\nColors used for each country:");
         for (Integer name: distanceMap.keySet()) {
             String key = name.toString();
             int value = distanceMap.get(name);
             System.out.println(key + " " + color[value]);
 
         }
-        System.out.println("Total no: of colors used:" + new HashSet<>(distanceMap.values()).size());
+        System.out.println("\nTotal no: of colors used:" + new HashSet<>(distanceMap.values()).size());
     }
 
 
@@ -133,10 +138,24 @@ public class Mapcolour {
                 }
             }
             state[u]=2;
+
         }
 
     }
+    public void printTree() {
+        for (Integer vertex : distanceMap.keySet()) {
+            int distance = distanceMap.get(vertex);
+            if(!treeLevelsMap.containsKey(distance)) {
+                treeLevelsMap.put(distance,new ArrayList<>());
+            }
+            treeLevelsMap.get(distance).add(vertex);
+        }
 
+        System.out.println("\nPrinting the BFS tree by levels:");
+        for(Map.Entry<Integer, List<Integer>> entry: treeLevelsMap.entrySet()) {
+            System.out.println("Level " + entry.getKey() + ": " + entry.getValue().toString());
+        }
+    }
 
     public static void main(String[] args) {
         Mapcolour mapColourObject=new Mapcolour();
@@ -144,6 +163,8 @@ public class Mapcolour {
         mapColourObject.displayAdjacencyList();
         mapColourObject.breadthFirstSearch(1);
         mapColourObject.printColors();
+        mapColourObject.printTree();
+
 
 
 
